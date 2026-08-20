@@ -42,7 +42,7 @@ jobs:
         if: ${{ contains(github.ref, 'refs/tags/v') }}
         id: version
         run: |
-          echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/v}
+          echo "VERSION=${GITHUB_REF#refs/tags/v}" >> "$GITHUB_OUTPUT"
       - name: Build binaries
         run: |
           env GOOS=windows GOARCH=amd64 go build -ldflags "-s -w -X github.com/anycable/anycable-go/telemetry.auth=$(echo "$ANYCABLE_TELEMETRY_TOKEN") -X github.com/anycable/anycable-go/version.version=${{ steps.version.outputs.VERSION }} -X github.com/anycable/anycable-go/version.sha=$(echo "$GITHUB_SHA" | cut -c -7)" -a -o dist/anycable-go-win-amd64.exe cmd/anycable-go/main.go
@@ -107,7 +107,7 @@ jobs:
         if: ${{ contains(github.ref, 'refs/tags/v') }}
         id: version
         run: |
-          echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/v}
+          echo "VERSION=${GITHUB_REF#refs/tags/v}" >> "$GITHUB_OUTPUT"
       - name: Build binaries for MacOS
         run: |
           env GOOS=darwin GOARCH=${{ matrix.suffix }} go build -ldflags "-s -w -X github.com/anycable/anycable-go/telemetry.auth=$(echo "$ANYCABLE_TELEMETRY_TOKEN") -X github.com/anycable/anycable-go/version.version=${{ steps.version.outputs.VERSION }} -X github.com/anycable/anycable-go/version.sha=$(echo "$GITHUB_SHA" | cut -c -7)" -a -o dist/anycable-go-darwin-${{ matrix.suffix }} cmd/anycable-go/main.go
